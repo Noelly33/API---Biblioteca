@@ -9,6 +9,7 @@ namespace DataBaseFirst.Models;
 [Table("AUTOR")]
 public partial class Autor
 {
+    //Esta es la clase autor
     [Key]
     [Column("ID_AUTOR")]
     public int IdAutor { get; set; }
