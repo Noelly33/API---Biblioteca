@@ -20,8 +20,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Repository\InterfacesService\" />
     <Folder Include="Service\" />
-    <Folder Include="Repository\Interfaces\" />
   </ItemGroup>
 
 </Project>
