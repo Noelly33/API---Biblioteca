@@ -11,6 +11,7 @@ namespace DataBaseFirst.Repository.InterfacesRepository
     {
         Task<List<Autor>> ListaAutores();
         Task<Autor> ObtenerAutorNombre(string nombre);
+        Task<Autor> ObtenerAutorID(int id);
         Task<int> RegistrarAutor(Autor autor);
         Task<int> EditarAutor(Autor autor);
         Task<int>EliminarAutor(int id);
