@@ -61,19 +61,19 @@ namespace DataBaseFirst.Service
             if (string.IsNullOrWhiteSpace(libro.Titulo) || string.IsNullOrWhiteSpace(libro.Genero) || !libro.IdAutor.HasValue || libro.IdAutor <= 0 || !libro.NumeroPaginas.HasValue || libro.NumeroPaginas <=0 || !libro.FechaPublicacion.HasValue || libro.FechaPublicacion > DateOnly.FromDateTime(DateTime.Today))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = libro };
              
-            var validacion = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñN]+ $");
+            var validacion = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñN\\s]+$");
             if (!validacion.IsMatch(libro.Titulo) || !validacion.IsMatch(libro.Genero))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = libro };
 
             var validacion2 = await _libroRepository.ListaLibros();
-            if (!validacion2.Any(l => l.Titulo == libro.Titulo))
+            if (validacion2.Any(l => l.Titulo == libro.Titulo))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = libro };
 
             var resultado = await _libroRepository.RegistrarLibro(libro);
             if (resultado > 0)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR };
+                return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER};
 
-            return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER, Data = libro };
+            return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = libro };
         }
 
         public async Task<ApiResponse<object>> EditarLibro(Libro libro)
@@ -88,19 +88,19 @@ namespace DataBaseFirst.Service
             if (string.IsNullOrWhiteSpace(libro.Titulo) || string.IsNullOrWhiteSpace(libro.Genero) || !libro.IdAutor.HasValue || libro.IdAutor <= 0 || !libro.NumeroPaginas.HasValue || libro.NumeroPaginas <= 0 || !libro.FechaPublicacion.HasValue || libro.FechaPublicacion > DateOnly.FromDateTime(DateTime.Today))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = libro };
 
-            var validacion = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñN]+ $");
+            var validacion = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñN\\s]+$");
             if (!validacion.IsMatch(libro.Titulo) || !validacion.IsMatch(libro.Genero))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = libro };
 
-            var validacion2 = await _libroRepository.ListaLibros();
-            if (!validacion2.Any(l => l.Titulo == libro.Titulo))
+           var validacion2 = await _libroRepository.ListaLibros();
+            if (validacion2.Any(l => l.Titulo == libro.Titulo))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = libro };
 
             var resultado = await _libroRepository.EditarLibro(libro);
             if (resultado > 0)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR };
+                return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_UPDATE };
 
-            return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER, Data = libro };
+            return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = libro };
         }
 
         public async Task<ApiResponse<int>> EliminarLibro(int idLibro)
@@ -108,8 +108,12 @@ namespace DataBaseFirst.Service
             var libro = await _libroRepository.BuscarPorId(idLibro);
             if (libro == null)
                 return new ApiResponse<int> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR };
+            
+            var resultado = await _libroRepository.EliminarLibro(idLibro);
+            if (resultado > 0)
+                return new ApiResponse<int> { IsSuccess = true, Message = Mensajes.MESSAGE_DELETE };
 
-            return new ApiResponse<int> { IsSuccess = true, Message = Mensajes.MESSAGE_DELETE };
+            return new ApiResponse<int> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR };
         }
 
     }

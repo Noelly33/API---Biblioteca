@@ -63,15 +63,15 @@ namespace DataBaseFirst.Service
             if(string.IsNullOrWhiteSpace(autor.Nombre) || string.IsNullOrWhiteSpace(autor.Nacionalidad))
                 return new ApiResponse<object> { IsSuccess = false , Message = Mensajes.MESSAGE_ERROR,Data = autor };
 
-            var validacion = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñN]+ $");
+            var validacion = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñN\\s]+$");
             if(!validacion.IsMatch(autor.Nombre) || !validacion.IsMatch(autor.Nacionalidad))
                 return new ApiResponse<object> {IsSuccess = false , Message=Mensajes.MESSAGE_ERROR, Data=autor };
 
             var resultado = await _autorRepository.RegistrarAutor(autor);
             if (resultado > 0)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR };
+                return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER };
 
-            return new ApiResponse<object> {IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER, Data=autor};
+            return new ApiResponse<object> {IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data=autor};
         }
 
         public async Task<ApiResponse<object>> EditarAutor(Autor autor)
@@ -86,24 +86,27 @@ namespace DataBaseFirst.Service
             if (string.IsNullOrWhiteSpace(autor.Nombre) || string.IsNullOrWhiteSpace(autor.Nacionalidad))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = autor };
 
-            var validacion = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñN]+ $");
+            var validacion = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñN\\s]+$");
             if (!validacion.IsMatch(autor.Nombre) || !validacion.IsMatch(autor.Nacionalidad))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = autor };
 
             var resultado = await _autorRepository.EditarAutor(autor);
             if (resultado > 0)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR };
+                return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_UPDATE };
 
-            return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_UPDATE, Data = autor };
+            return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = autor };
         }
 
-        public async Task<ApiResponse<int>> EliminarAutor(int idAutor)
+        public async Task<ApiResponse<int>> EliminarAutor(int id)
         {
-            var autor = await _autorRepository.ObtenerAutorID(idAutor);
+            var autor = await _autorRepository.ObtenerAutorID(id);
             if(autor == null)
                 return new ApiResponse<int> { IsSuccess = false, Message= Mensajes.MESSAGE_ERROR };
+            var resultado = await _autorRepository.EliminarAutor(id);
+            if (resultado > 0)
+                return new ApiResponse<int> { IsSuccess = true, Message = Mensajes.MESSAGE_DELETE };
 
-            return new ApiResponse<int> { IsSuccess = true, Message= Mensajes.MESSAGE_DELETE };
+            return new ApiResponse<int> { IsSuccess = false, Message= Mensajes.MESSAGE_ERROR };
         }
 
     }

@@ -29,7 +29,7 @@ namespace DataBaseFirst.Repository
         public async Task<Usuario> ObtenerUsuarioID(int idUsuario)
         {
             var id = new SqlParameter("@Id_Usuario", idUsuario);
-            return await Task.Run(() => _dbContext.Usuarios.FromSqlRaw("EXEC PA_BUSCAR_ID_USUARIO @Id_Usuario", idUsuario).AsNoTracking().AsEnumerable().FirstOrDefault());
+            return await Task.Run(() => _dbContext.Usuarios.FromSqlRaw("EXEC PA_BUSCAR_ID_USUARIO @Id_Usuario", id).AsNoTracking().AsEnumerable().FirstOrDefault());
         }
 
         public async Task<int> RegistrarUsuario(Usuario usuario)
