@@ -1,4 +1,5 @@
 ﻿using DataBaseFirst.Models;
+using DataBaseFirst.Models.Dto;
 using DataBaseFirst.Repository;
 using Microsoft.Data.SqlClient;
 using System;
@@ -52,6 +53,16 @@ namespace DataBaseFirst.Service
 
             return new ApiResponse<Usuario> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY_SUCCESS, Data = idUsuario };
 
+        }
+
+        public async Task<ApiResponse<UsuarioLibroPrestamoDto>> ObtenerUsuarioLibroPrestamo(string nombres)
+        {
+            var usuarioLibroPrestamo = await _usuarioRepository.ObtenerUsuarioLibroPrestamo(nombres);
+            
+            if (usuarioLibroPrestamo == null)
+                return new ApiResponse<UsuarioLibroPrestamoDto> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = usuarioLibroPrestamo };
+            
+            return new ApiResponse<UsuarioLibroPrestamoDto> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY_SUCCESS, Data = usuarioLibroPrestamo };
         }
 
         public async Task<ApiResponse<object>> RegistrarUsuario(Usuario usuario)
