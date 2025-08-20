@@ -1,4 +1,5 @@
 ﻿using DataBaseFirst.Models;
+using DataBaseFirst.Models.Dto;
 using DataBaseFirst.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,13 @@ namespace APIBiblioteca.Controllers
         {
             var libro = await _libroService.BuscarPorId(id);
             return Ok(libro);
+        }
+
+        [HttpGet("/libroprestamo")]
+        public async Task<ActionResult<ApiResponse<LibroPrestamoDto>>> ObtenerLibroPrestamo(string titulo)
+        {
+            var libroPrestamo = await _libroService.ObtenerLibroPrestamo(titulo);
+            return Ok(libroPrestamo);
         }
 
         [HttpPost]
