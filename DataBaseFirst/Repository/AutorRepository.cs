@@ -29,7 +29,7 @@ namespace DataBaseFirst.Repository
         public async Task<Autor> ObtenerAutorID(int idAutor)
         {
             var id = new SqlParameter("@Id_Autor", idAutor);
-            return await Task.Run(() => _dbContext.Autors.FromSqlRaw("EXEC PA_BUSCAR_AUTOR_ID @Id_Autor", idAutor).AsNoTracking().AsEnumerable().FirstOrDefault());
+            return await Task.Run(() => _dbContext.Autors.FromSqlRaw("EXEC PA_BUSCAR_AUTOR_ID @Id_Autor", id).AsNoTracking().AsEnumerable().FirstOrDefault());
         }
 
         public async Task<int> RegistrarAutor(Autor autor)
@@ -51,10 +51,10 @@ namespace DataBaseFirst.Repository
                 );
         }
 
-        public async Task<int> EliminarAutor(int idAutor)
+        public async Task<int> EliminarAutor(int id)
         {
             return await _dbContext.Database.ExecuteSqlRawAsync("EXEC PA_ELIMINAR_AUTOR @Id_Autor",
-                new SqlParameter("@Id_Autor", idAutor)
+                new SqlParameter("@Id_Autor", id)
             );
         }
 

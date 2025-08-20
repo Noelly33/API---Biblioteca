@@ -14,6 +14,6 @@ namespace Utilities
         public const string MESSAGE_ERROR = "Ha ocurrido un error, por favor intente nuevamente";
         public const string MESSAGE_QUERY_SUCCESS = "Consulta realizada correctamente";
         public const string MESSAGE_QUERY_EMPTY = "No se encontraron resultados para la consulta";
-
+        public const string MESSAGE_DELETE_ERROR = "No se puede eliminar por referencias en el objeto";
     }
 }

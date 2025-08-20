@@ -11,6 +11,7 @@ namespace DataBaseFirst.Repository.InterfacesService
     public interface IPrestamoService
     {
         Task<ApiResponse<List<Prestamo>>> ListaPrestamos();
+        Task<ApiResponse<Prestamo>> ObtenerPorID(int id);
         Task<ApiResponse<Prestamo>> ObtenerPorUsuario(int id);
         Task<ApiResponse<Prestamo>> ObtenerPorLibro(int id);
         Task<ApiResponse<object>> RegistrarPrestamo(Prestamo prestamo);

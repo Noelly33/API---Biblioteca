@@ -33,6 +33,17 @@ namespace DataBaseFirst.Service
 
         }
 
+        public async Task<ApiResponse<Prestamo>> ObtenerPorID(int id)
+        {
+            var idPrestamo = await _prestamoRepository.ObtenerPorID(id);
+
+            if (idPrestamo == null)
+                return new ApiResponse<Prestamo> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = idPrestamo };
+
+            return new ApiResponse<Prestamo> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY_SUCCESS, Data = idPrestamo };
+
+        }
+
         public async Task<ApiResponse<Prestamo>> ObtenerPorLibro(int idLibro)
         {
             var libro = await _prestamoRepository.ObtenerPorLibro(idLibro);
@@ -64,9 +75,9 @@ namespace DataBaseFirst.Service
 
             var resultado = await _prestamoRepository.RegistrarPrestamo(prestamo);
             if (resultado > 0)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR };
+                return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER };
 
-            return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER, Data = prestamo };
+            return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = prestamo };
         }
 
     }

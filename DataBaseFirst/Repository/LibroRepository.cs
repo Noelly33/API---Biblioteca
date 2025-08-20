@@ -34,7 +34,7 @@ namespace DataBaseFirst.Repository
 
         public async Task<int> RegistrarLibro(Libro libro)
         {
-            return await _dbContext.Database.ExecuteSqlRawAsync("EXEC PA_REGISTAR_LIBRO @Titulo, @Genero, @Id_Autor, @Numero_Paginas, @Fecha_Publicacion, @Estado",
+            return await _dbContext.Database.ExecuteSqlRawAsync("EXEC PA_REGISTRAR_LIBRO @Titulo, @Genero, @Id_Autor, @Numero_Paginas, @Fecha_Publicacion, @Estado",
                 new SqlParameter("@Titulo", libro.Titulo ??(object)DBNull.Value),
                 new SqlParameter("@Genero", libro.Genero ?? (object)DBNull.Value),
                 new SqlParameter("@Id_Autor", libro.IdAutor),

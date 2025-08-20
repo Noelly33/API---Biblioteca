@@ -1,5 +1,6 @@
 ﻿using DataBaseFirst.Models;
 using DataBaseFirst.Repository;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,19 +62,19 @@ namespace DataBaseFirst.Service
             if (string.IsNullOrWhiteSpace(usuario.Nombres) || string.IsNullOrWhiteSpace(usuario.Apellidos) || string.IsNullOrWhiteSpace(usuario.Correo))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = usuario };
 
-            var validacion = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñN]+ $");
+            var validacion = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñN\\s]+$");
             if (!validacion.IsMatch(usuario.Nombres) || !validacion.IsMatch(usuario.Apellidos))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = usuario };
 
-            var validacion2 = new Regex(@"^[@\s]+@[^@\s]+\.[^@\s]+$");
-            if (!validacion.IsMatch(usuario.Correo))
+            var validacion2 = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+            if (validacion.IsMatch(usuario.Correo))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = usuario };
 
             var resultado = await _usuarioRepository.RegistrarUsuario(usuario);
             if (resultado > 0)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR };
+                return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER };
 
-            return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER, Data = usuario };
+            return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = usuario };
         }
 
         public async Task<ApiResponse<object>> EditarUsuario(Usuario usuario)
@@ -82,35 +83,45 @@ namespace DataBaseFirst.Service
             if (validacionPrincipal == null)
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR };
 
-            if(usuario == null)
+            if (usuario == null)
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = usuario };
 
             if (string.IsNullOrWhiteSpace(usuario.Nombres) || string.IsNullOrWhiteSpace(usuario.Apellidos) || string.IsNullOrWhiteSpace(usuario.Correo))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = usuario };
 
-            var validacion = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñN]+ $");
+            var validacion = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñN\\s]+$");
             if (!validacion.IsMatch(usuario.Nombres) || !validacion.IsMatch(usuario.Apellidos))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = usuario };
 
-            var validacion2 = new Regex(@"^[@\s]+@[^@\s]+\.[^@\s]+$");
-            if (!validacion.IsMatch(usuario.Correo))
+            var validacion2 = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+            if (validacion.IsMatch(usuario.Correo))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = usuario };
 
             var resultado = await _usuarioRepository.EditarUsuario(usuario);
             if (resultado > 0)
-                return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR };
+                return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_UPDATE };
 
-            return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_UPDATE, Data = usuario };
+            return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = usuario };
         }
 
-        public async Task<ApiResponse<int>> EliminarUsuario(int idUsuario)
+        public async Task<ApiResponse<int>> EliminarUsuario(int id)
         {
-            var usuario = await _usuarioRepository.ObtenerUsuarioID(idUsuario);
-            if (usuario == null)
+            try
+            {
+                var usuario = await _usuarioRepository.ObtenerUsuarioID(id);
+                if (usuario == null)
+                    return new ApiResponse<int> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR };
+
+                var resultado = await _usuarioRepository.EliminarUsuario(id);
+                if (resultado > 0)
+                    return new ApiResponse<int> { IsSuccess = true, Message = Mensajes.MESSAGE_DELETE };
+
                 return new ApiResponse<int> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR };
-
-            return new ApiResponse<int> { IsSuccess = true, Message = Mensajes.MESSAGE_DELETE };
+            }
+            catch (SqlException ex) when(ex.Number == 547)
+            {
+                return new ApiResponse<int> { IsSuccess = false, Message = Mensajes.MESSAGE_DELETE_ERROR };
+            }
         }
-
     }
 }
