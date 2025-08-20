@@ -1,4 +1,5 @@
 ﻿using DataBaseFirst.Models;
+using DataBaseFirst.Models.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace DataBaseFirst.Repository.InterfacesRepository
         Task<List<Usuario>> ListaUsuarios();
         Task<Usuario> ObtenerUsuarioNombre(string nombres);
         Task<Usuario> ObtenerUsuarioID(int id);
+        Task<UsuarioLibroPrestamoDto> ObtenerUsuarioLibroPrestamo(string nombre);
         Task<int> RegistrarUsuario(Usuario usuario);
         Task<int> EditarUsuario(Usuario usuario);
         Task<int> EliminarUsuario(int id);

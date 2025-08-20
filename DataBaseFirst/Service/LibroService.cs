@@ -1,4 +1,5 @@
 ﻿using DataBaseFirst.Models;
+using DataBaseFirst.Models.Dto;
 using DataBaseFirst.Repository;
 using DataBaseFirst.Repository.InterfacesService;
 using System;
@@ -51,6 +52,16 @@ namespace DataBaseFirst.Service
 
             return new ApiResponse<Libro> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY_SUCCESS, Data = idLibro };
 
+        }
+
+        public async Task<ApiResponse<LibroPrestamoDto>> ObtenerLibroPrestamo(string titulo)
+        {
+            var libroPrestamo = await _libroRepository.ObtenerLibroPrestamo(titulo);
+            
+            if (libroPrestamo == null)
+                return new ApiResponse<LibroPrestamoDto> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = libroPrestamo };
+            
+            return new ApiResponse<LibroPrestamoDto> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY_SUCCESS, Data = libroPrestamo };
         }
 
         public async Task<ApiResponse<object>> RegistrarLibro(Libro libro)

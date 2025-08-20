@@ -1,5 +1,6 @@
 ﻿using Azure;
 using DataBaseFirst.Models;
+using DataBaseFirst.Models.Dto;
 using DataBaseFirst.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -39,6 +40,13 @@ namespace APIBiblioteca.Controllers
         {
             var autor = await _autorService.ObtenerAutorID(id);
             return Ok(autor);
+        }
+
+        [HttpGet("/autorLibro")]
+        public async Task<ActionResult<ApiResponse<AutorLibroDto>>> ObtenerAutorLibro(string nombre)
+        {
+            var autorLibro = await _autorService.ObtenerAutorLibro(nombre);
+            return Ok(autorLibro);
         }
 
         [HttpPost]

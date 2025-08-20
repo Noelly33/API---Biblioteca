@@ -1,5 +1,6 @@
 ﻿using DataBaseFirst.Data;
 using DataBaseFirst.Models;
+using DataBaseFirst.Models.Dto;
 using DataBaseFirst.Repository.InterfacesRepository;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +31,12 @@ namespace DataBaseFirst.Repository
         {
             var id = new SqlParameter("@Id_Libro", idLibro);
             return await Task.Run(() => _dbContext.Libros.FromSqlRaw("EXEC PA_BUSCAR_LIBRO_ID @Id_Libro", id).AsNoTracking().AsEnumerable().FirstOrDefault());
+        }
+
+        public async Task<LibroPrestamoDto> ObtenerLibroPrestamo(string titulo)
+        {
+            var libroPrestamo = new SqlParameter("@Titulo", titulo);
+            return await Task.Run(() => _dbContext.LibroPrestamo.FromSqlRaw("EXEC PA_BUSCAR_LIBRO_PRESTAMO @Titulo", libroPrestamo).AsNoTracking().AsEnumerable().FirstOrDefault());
         }
 
         public async Task<int> RegistrarLibro(Libro libro)
