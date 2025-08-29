@@ -3,7 +3,7 @@ using DataBaseFirst.Models.Dto;
 using DataBaseFirst.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Utilities;
+using Utilities.Shared;
 
 namespace APIBiblioteca.Controllers
 {
@@ -24,7 +24,7 @@ namespace APIBiblioteca.Controllers
             return await _libroService.ListaLibros();
         }
 
-        [HttpGet("/titulo")]
+        [HttpGet("titulo")]
         public async Task<ActionResult<ApiResponse<Libro>>> BuscarPorTitulo(string titulo)
         {
             var libro = await _libroService.BuscarPorTitulo(titulo);
@@ -38,11 +38,11 @@ namespace APIBiblioteca.Controllers
             return Ok(libro);
         }
 
-        [HttpGet("/libroprestamo")]
-        public async Task<ActionResult<ApiResponse<LibroPrestamoDto>>> ObtenerLibroPrestamo(string titulo)
+        [HttpGet("libroPrestamo")]
+        public async Task<ActionResult<ApiResponse<LibroPrestamoDto>>> ObtenerLibroPrestamo(string libroPrestamo)
         {
-            var libroPrestamo = await _libroService.ObtenerLibroPrestamo(titulo);
-            return Ok(libroPrestamo);
+            var libro = await _libroService.ObtenerLibroPrestamo(libroPrestamo);
+            return Ok(libro);
         }
 
         [HttpPost]
