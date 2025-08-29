@@ -9,7 +9,6 @@ namespace DataBaseFirst.Models;
 [Table("LIBRO")]
 public partial class Libro
 {
-    //Esta es la clase libro
     [Key]
     [Column("ID_LIBRO")]
     public int IdLibro { get; set; }
@@ -18,9 +17,8 @@ public partial class Libro
     [StringLength(100)]
     public string? Titulo { get; set; }
 
-    [Column("GENERO")]
-    [StringLength(50)]
-    public string? Genero { get; set; }
+    [Column("ID_GENERO")]
+    public int? IdGenero { get; set; }
 
     [Column("ID_AUTOR")]
     public int? IdAutor { get; set; }
@@ -40,6 +38,10 @@ public partial class Libro
     [ForeignKey("IdAutor")]
     [InverseProperty("Libros")]
     public virtual Autor? IdAutorNavigation { get; set; }
+
+    [ForeignKey("IdGenero")]
+    [InverseProperty("Libros")]
+    public virtual Genero? IdGeneroNavigation { get; set; }
 
     [InverseProperty("IdLibroNavigation")]
     public virtual ICollection<Prestamo> Prestamos { get; set; } = new List<Prestamo>();
