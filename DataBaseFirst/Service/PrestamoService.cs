@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Utilities;
+using Utilities.Shared;
 
 namespace DataBaseFirst.Service
 {
@@ -44,33 +44,12 @@ namespace DataBaseFirst.Service
 
         }
 
-        public async Task<ApiResponse<Prestamo>> ObtenerPorLibro(int idLibro)
-        {
-            var libro = await _prestamoRepository.ObtenerPorLibro(idLibro);
-
-            if (idLibro == null)
-                return new ApiResponse<Prestamo> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = libro };
-
-            return new ApiResponse<Prestamo> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY_SUCCESS, Data = libro };
-        }
-
-        public async Task<ApiResponse<Prestamo>> ObtenerPorUsuario(int idUsuario)
-        {
-            var usuario = await _prestamoRepository.ObtenerPorUsuario(idUsuario);
-
-            if (usuario == null)
-                return new ApiResponse<Prestamo> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = usuario };
-
-            return new ApiResponse<Prestamo> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY_SUCCESS, Data = usuario };
-
-        }
-
         public async Task<ApiResponse<object>> RegistrarPrestamo(Prestamo prestamo)
         {
             if (prestamo == null)
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = prestamo };
 
-            if (!prestamo.IdUsuario.HasValue || prestamo.IdUsuario <= 0 || !prestamo.IdLibro.HasValue || prestamo.IdLibro <= 0 || !prestamo.FechaPrestamo.HasValue || !prestamo.FechaDevolucion.HasValue ||prestamo.FechaDevolucion > DateOnly.FromDateTime(DateTime.Today))
+            if (!prestamo.IdUsuario.HasValue || prestamo.IdUsuario <= 0 || !prestamo.IdLibro.HasValue || prestamo.IdLibro <= 0 || !prestamo.FechaPrestamo.HasValue || !prestamo.FechaDevolucion.HasValue || prestamo.FechaDevolucion > DateOnly.FromDateTime(DateTime.Today))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = prestamo };
 
             var resultado = await _prestamoRepository.RegistrarPrestamo(prestamo);
