@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Utilities;
+using Utilities.Shared;
 
 namespace DataBaseFirst.Repository.InterfacesService
 {
