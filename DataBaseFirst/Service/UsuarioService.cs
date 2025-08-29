@@ -1,6 +1,7 @@
 ﻿using DataBaseFirst.Models;
 using DataBaseFirst.Models.Dto;
 using DataBaseFirst.Repository;
+using DataBaseFirst.Repository.InterfacesService;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -8,11 +9,11 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Utilities;
+using Utilities.Shared;
 
 namespace DataBaseFirst.Service
 {
-    public class UsuarioService
+    public class UsuarioService : IUsuarioService
     {
 
         public readonly UsuarioRepository _usuarioRepository;
@@ -34,15 +35,15 @@ namespace DataBaseFirst.Service
 
         }
 
-        public async Task<ApiResponse<Usuario>> ObtenerUsuarioNombre(string nombres)
+        /*public async Task<ApiResponse<Usuario1>> ObtenerUsuarioNombre(string nombres)
         {
             var nombreUsuario = await _usuarioRepository.ObtenerUsuarioNombre(nombres);
 
             if (nombres == null)
-                return new ApiResponse<Usuario> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = nombreUsuario };
+                return new ApiResponse<Usuario1> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = nombreUsuario };
 
-            return new ApiResponse<Usuario> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY_SUCCESS, Data = nombreUsuario };
-        }
+            return new ApiResponse<Usuario1> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY_SUCCESS, Data = nombreUsuario };
+        }*/
 
         public async Task<ApiResponse<Usuario>> ObtenerUsuarioID(int id)
         {
@@ -55,14 +56,19 @@ namespace DataBaseFirst.Service
 
         }
 
-        public async Task<ApiResponse<UsuarioLibroPrestamoDto>> ObtenerUsuarioLibroPrestamo(string nombres)
+        public async Task<ApiResponse<UsuarioRolDto>> IniciarSesion(LoginDto login)
         {
-            var usuarioLibroPrestamo = await _usuarioRepository.ObtenerUsuarioLibroPrestamo(nombres);
-            
-            if (usuarioLibroPrestamo == null)
-                return new ApiResponse<UsuarioLibroPrestamoDto> { IsSuccess = false, Message = Mensajes.MESSAGE_QUERY_EMPTY, Data = usuarioLibroPrestamo };
-            
-            return new ApiResponse<UsuarioLibroPrestamoDto> { IsSuccess = true, Message = Mensajes.MESSAGE_QUERY_SUCCESS, Data = usuarioLibroPrestamo };
+            if (login == null)
+                return new ApiResponse<UsuarioRolDto> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR };
+
+            if (string.IsNullOrWhiteSpace(login.usuario) || string.IsNullOrWhiteSpace(login.clave))
+                return new ApiResponse<UsuarioRolDto> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR };
+
+            var resultado = await _usuarioRepository.IniciarSesion(login);
+
+            if (resultado == null)
+                return new ApiResponse<UsuarioRolDto> { IsSuccess = false, Message = Mensajes.MESSAGE_LOGIN_ERROR, Data = resultado };
+            return new ApiResponse<UsuarioRolDto> { IsSuccess = true, Message = Mensajes.MESSAGE_LOGIN_SUCCESS, Data = resultado };
         }
 
         public async Task<ApiResponse<object>> RegistrarUsuario(Usuario usuario)
@@ -70,11 +76,11 @@ namespace DataBaseFirst.Service
             if (usuario == null)
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = usuario };
 
-            if (string.IsNullOrWhiteSpace(usuario.Nombres) || string.IsNullOrWhiteSpace(usuario.Apellidos) || string.IsNullOrWhiteSpace(usuario.Correo))
+            if (string.IsNullOrWhiteSpace(usuario.Usuario1) || string.IsNullOrWhiteSpace(usuario.Correo) || string.IsNullOrWhiteSpace(usuario.Clave) || !usuario.IdRol.HasValue || usuario.IdRol <= 0)
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = usuario };
 
             var validacion = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñN\\s]+$");
-            if (!validacion.IsMatch(usuario.Nombres) || !validacion.IsMatch(usuario.Apellidos))
+            if (!validacion.IsMatch(usuario.Usuario1))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = usuario };
 
             var validacion2 = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
@@ -97,11 +103,12 @@ namespace DataBaseFirst.Service
             if (usuario == null)
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = usuario };
 
-            if (string.IsNullOrWhiteSpace(usuario.Nombres) || string.IsNullOrWhiteSpace(usuario.Apellidos) || string.IsNullOrWhiteSpace(usuario.Correo))
+
+            if (string.IsNullOrWhiteSpace(usuario.Usuario1) || string.IsNullOrWhiteSpace(usuario.Correo) || string.IsNullOrWhiteSpace(usuario.Clave) || !usuario.IdRol.HasValue || usuario.IdRol <= 0)
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = usuario };
 
             var validacion = new Regex("^[a-zA-ZáéíóúÁÉÍÓÚñN\\s]+$");
-            if (!validacion.IsMatch(usuario.Nombres) || !validacion.IsMatch(usuario.Apellidos))
+            if (!validacion.IsMatch(usuario.Usuario1))
                 return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = usuario };
 
             var validacion2 = new Regex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$");
@@ -110,7 +117,7 @@ namespace DataBaseFirst.Service
 
             var resultado = await _usuarioRepository.EditarUsuario(usuario);
             if (resultado > 0)
-                return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_UPDATE };
+                return new ApiResponse<object> { IsSuccess = true, Message = Mensajes.MESSAGE_REGISTER };
 
             return new ApiResponse<object> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR, Data = usuario };
         }
@@ -129,7 +136,7 @@ namespace DataBaseFirst.Service
 
                 return new ApiResponse<int> { IsSuccess = false, Message = Mensajes.MESSAGE_ERROR };
             }
-            catch (SqlException ex) when(ex.Number == 547)
+            catch (SqlException ex) when (ex.Number == 547)
             {
                 return new ApiResponse<int> { IsSuccess = false, Message = Mensajes.MESSAGE_DELETE_ERROR };
             }
