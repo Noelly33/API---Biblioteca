@@ -11,8 +11,6 @@ namespace DataBaseFirst.Repository.InterfacesRepository
     {
         Task<List<Prestamo>> ListaPrestamos();
         Task<Prestamo> ObtenerPorID(int id);
-        Task<Prestamo> ObtenerPorUsuario(int id);
-        Task<Prestamo> ObtenerPorLibro(int id);
         Task<int> RegistrarPrestamo(Prestamo prestamo);
     }
 }
