@@ -5,7 +5,7 @@ using DataBaseFirst.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Utilities;
+using Utilities.Shared;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace APIBiblioteca.Controllers
@@ -16,21 +16,21 @@ namespace APIBiblioteca.Controllers
     {
         private readonly AutorService _autorService;
 
-        public AutorController(AutorService autorService) 
-        { 
+        public AutorController(AutorService autorService)
+        {
             _autorService = autorService;
         }
 
         [HttpGet]
         public async Task<ApiResponse<List<Autor>>> ListaAutores()
         {
-            return await _autorService.ListaAutores();  
+            return await _autorService.ListaAutores();
         }
 
-        [HttpGet("/nombre")]
-        public async Task<ActionResult<ApiResponse<Autor>>> ObtenerAutorNombre(string nombre)
+        [HttpGet("autorNombre")]
+        public async Task<ActionResult<ApiResponse<Autor>>> ObtenerAutorNombre(string autorNombre)
         {
-            var autor = await _autorService.ObtenerAutorNombre(nombre);
+            var autor = await _autorService.ObtenerAutorNombre(autorNombre);
             return Ok(autor);
         }
 
@@ -42,18 +42,18 @@ namespace APIBiblioteca.Controllers
             return Ok(autor);
         }
 
-        [HttpGet("/autorLibro")]
-        public async Task<ActionResult<ApiResponse<AutorLibroDto>>> ObtenerAutorLibro(string nombre)
+        [HttpGet("autorLibro")]
+        public async Task<ActionResult<ApiResponse<AutorLibroDto>>> ObtenerAutorLibro(string autorLibro)
         {
-            var autorLibro = await _autorService.ObtenerAutorLibro(nombre);
-            return Ok(autorLibro);
+            var autor = await _autorService.ObtenerAutorLibro(autorLibro);
+            return Ok(autor);
         }
 
         [HttpPost]
         public async Task<ActionResult<ApiResponse<object>>> RegistrarAutor([FromBody] Autor autor)
         {
-           var response = await _autorService.RegistrarAutor(autor);
-           return response.IsSuccess ? Ok(response) : BadRequest(response);
+            var response = await _autorService.RegistrarAutor(autor);
+            return response.IsSuccess ? Ok(response) : BadRequest(response);
         }
 
         [HttpPut]
