@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Utilities
+namespace Utilities.Shared
 {
     public class Mensajes
     {
@@ -15,5 +15,9 @@ namespace Utilities
         public const string MESSAGE_QUERY_SUCCESS = "Consulta realizada correctamente";
         public const string MESSAGE_QUERY_EMPTY = "No se encontraron resultados para la consulta";
         public const string MESSAGE_DELETE_ERROR = "No se puede eliminar por referencias en el objeto";
+        public const string MESSAGE_REQUIRED_FIELDS = "La cédula debe contener exactamente 10 dígitos.";
+        public const string MESSAGE_LOGIN_SUCCESS = "SeSión iniciada correctamente";
+        public const string MESSAGE_LOGIN_ERROR = "Usuario o clave incorrecta";
+        public const string MESSAGE_LOGIN_TOKEN = "Token generado correctamente";
     }
 }

@@ -6,20 +6,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataBaseFirst.Models;
 
-[Table("AUTOR")]
-public partial class Autor
+[Table("GENERO")]
+public partial class Genero
 {
     [Key]
-    [Column("ID_AUTOR")]
-    public int IdAutor { get; set; }
+    [Column("ID_GENERO")]
+    public int IdGenero { get; set; }
 
     [Column("NOMBRE")]
     [StringLength(50)]
     public string? Nombre { get; set; }
-
-    [Column("NACIONALIDAD")]
-    [StringLength(50)]
-    public string? Nacionalidad { get; set; }
 
     [Column("ESTADO")]
     public bool? Estado { get; set; }
@@ -27,6 +23,6 @@ public partial class Autor
     [Column("FECHA_REGISTRO", TypeName = "datetime")]
     public DateTime? FechaRegistro { get; set; }
 
-    [InverseProperty("IdAutorNavigation")]
+    [InverseProperty("IdGeneroNavigation")]
     public virtual ICollection<Libro> Libros { get; set; } = new List<Libro>();
 }

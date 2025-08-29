@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Utilities;
+using Utilities.Shared;
 
 namespace DataBaseFirst.Repository.InterfacesService
 {
@@ -12,8 +12,6 @@ namespace DataBaseFirst.Repository.InterfacesService
     {
         Task<ApiResponse<List<Prestamo>>> ListaPrestamos();
         Task<ApiResponse<Prestamo>> ObtenerPorID(int id);
-        Task<ApiResponse<Prestamo>> ObtenerPorUsuario(int id);
-        Task<ApiResponse<Prestamo>> ObtenerPorLibro(int id);
         Task<ApiResponse<object>> RegistrarPrestamo(Prestamo prestamo);
     }
 }

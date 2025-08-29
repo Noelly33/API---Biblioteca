@@ -1,4 +1,4 @@
-﻿namespace Utilities
+﻿namespace Utilities.Shared
 {
     public class ApiResponse<T>
     {

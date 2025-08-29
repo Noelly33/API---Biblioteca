@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataBaseFirst.Models.Dto
 {
-    public class UsuarioLibroPrestamoDto
+    public class ClienteLibroPrestamoDto
     {
         public string? Nombres { get; set; }
         public string? Titulo { get; set; }

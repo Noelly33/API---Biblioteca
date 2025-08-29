@@ -3,7 +3,7 @@ using DataBaseFirst.Repository.InterfacesService;
 using DataBaseFirst.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Utilities;
+using Utilities.Shared;
 
 namespace APIBiblioteca.Controllers
 {
@@ -29,20 +29,6 @@ namespace APIBiblioteca.Controllers
         {
             var prestamo = await _prestamoService.ObtenerPorID(id);
             return Ok(prestamo);
-        }
-
-        [HttpGet("/libro")]
-        public async Task<ActionResult<ApiResponse<Prestamo>>> ObtenerPorLibro(int idLibro)
-        {
-            var libro = await _prestamoService.ObtenerPorLibro(idLibro);
-            return Ok(libro);
-        }
-
-        [HttpGet("/usuario")]
-        public async Task<ActionResult<ApiResponse<Prestamo>>> ObtenerPorUsuario(int idUsuario)
-        {
-            var usuario = await _prestamoService.ObtenerPorUsuario(idUsuario);
-            return Ok(usuario);
         }
 
         [HttpPost]

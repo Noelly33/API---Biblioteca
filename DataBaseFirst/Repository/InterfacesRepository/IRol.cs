@@ -7,10 +7,9 @@ using System.Threading.Tasks;
 
 namespace DataBaseFirst.Repository.InterfacesRepository
 {
-    public interface IPrestamo
+    public interface IRol
     {
-        Task<List<Prestamo>> ListaPrestamos();
-        Task<Prestamo> ObtenerPorID(int id);
-        Task<int> RegistrarPrestamo(Prestamo prestamo);
+        Task<List<Rol>> ListaRoles();
+
     }
 }

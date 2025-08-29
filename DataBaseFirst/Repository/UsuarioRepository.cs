@@ -4,12 +4,13 @@ using DataBaseFirst.Models.Dto;
 using DataBaseFirst.Repository.InterfacesRepository;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Utilities.Security;
 
 namespace DataBaseFirst.Repository
 {
     public class UsuarioRepository : IUsuario
     {
-        private readonly DBContext _dbContext; 
+        private readonly DBContext _dbContext;
 
         public UsuarioRepository(DBContext dbContext)
         {
@@ -21,43 +22,50 @@ namespace DataBaseFirst.Repository
             return await _dbContext.Usuarios.FromSqlRaw("EXEC PA_LISTAR_USUARIOS").ToListAsync();
         }
 
-        public async Task<Usuario> ObtenerUsuarioNombre(string nombres)
-        {
-            var id = new SqlParameter("@Nombres", nombres);
-            return await Task.Run(() => _dbContext.Usuarios.FromSqlRaw("EXEC PA_BUSCAR_NOMBRE_USUARIO @nombres", id).AsNoTracking().AsEnumerable().FirstOrDefault());
-        }
+        /*  public async Task<Usuario1> ObtenerUsuarioNombre(string nombres)
+          {
+              var id = new SqlParameter("@Nombres", nombres);
+              return await Task.Run(() => _dbContext.Usuarios.FromSqlRaw("EXEC PA_BUSCAR_NOMBRE_USUARIO @nombres", id).AsNoTracking().AsEnumerable().FirstOrDefault());
+          }*/
 
         public async Task<Usuario> ObtenerUsuarioID(int idUsuario)
         {
-            var id = new SqlParameter("@Id_Usuario", idUsuario);
-            return await Task.Run(() => _dbContext.Usuarios.FromSqlRaw("EXEC PA_BUSCAR_ID_USUARIO @Id_Usuario", id).AsNoTracking().AsEnumerable().FirstOrDefault());
+            var id = new SqlParameter("@id_usuario", idUsuario);
+            return await Task.Run(() => _dbContext.Usuarios.FromSqlRaw("EXEC PA_BUSCAR_USUARIO_ID @id_usuario", id).AsNoTracking().AsEnumerable().FirstOrDefault());
         }
-
-        public async Task<UsuarioLibroPrestamoDto> ObtenerUsuarioLibroPrestamo(string nombres)
+        public async Task<UsuarioRolDto?> IniciarSesion(LoginDto login)
         {
-            var usuarioLibroPrestamo = new SqlParameter("@Nombres", nombres);
-            return await Task.Run(() => _dbContext.UsuarioLibroPrestamo.FromSqlRaw("EXEC PA_BUSCAR_USUARIO_LIBRO_PRESTAMO @Nombres", usuarioLibroPrestamo).AsNoTracking().AsEnumerable().FirstOrDefault());
+            string claveEncriptada = Encriptacion.EncriptarClave(login.clave ?? "");
+
+            var usuario = new SqlParameter("@usuario", login.usuario ?? (object)DBNull.Value);
+            var clave = new SqlParameter("@clave", claveEncriptada);
+            return await Task.Run(() => _dbContext.UsuarioRol.FromSqlRaw("EXEC PA_INICIAR_SESION @usuario, @clave", usuario, clave).AsNoTracking().AsEnumerable().FirstOrDefault());
         }
 
         public async Task<int> RegistrarUsuario(Usuario usuario)
         {
-            return await _dbContext.Database.ExecuteSqlRawAsync("EXEC PA_REGISTRAR_USUARIO @Nombres, @Apellidos, @Correo, @Estado",
+            string claveEncriptada = Encriptacion.EncriptarClave(usuario.Clave ?? "");
 
-                new SqlParameter("@Nombres", usuario.Nombres ?? (object)DBNull.Value),
-                new SqlParameter("@Apellidos", usuario.Apellidos ?? (object)DBNull.Value),
-                new SqlParameter("@Correo", usuario.Correo ?? (object)DBNull.Value),
+            return await _dbContext.Database.ExecuteSqlRawAsync("EXEC PA_REGISTRAR_USUARIO @usuario, @correo, @clave, @id_rol, @Estado",
+
+                new SqlParameter("@usuario", usuario.Usuario1 ?? (object)DBNull.Value),
+                new SqlParameter("@correo", usuario.Correo ?? (object)DBNull.Value),
+                new SqlParameter("@clave", claveEncriptada),
+                new SqlParameter("@id_rol", usuario.IdRol),
                 new SqlParameter("@Estado", usuario.Estado ?? false)
                 );
         }
 
         public async Task<int> EditarUsuario(Usuario usuario)
         {
-            return await _dbContext.Database.ExecuteSqlRawAsync("EXEC PA_EDITAR_USUARIO @Id_Usuario, @Nombres, @Apellidos, @Correo, @Estado",
+            string claveEncriptada = Encriptacion.EncriptarClave(usuario.Clave ?? "");
 
-                new SqlParameter("@Id_Usuario", usuario.IdUsuario),
-                new SqlParameter("@Nombres", usuario.Nombres ?? (object)DBNull.Value),
-                new SqlParameter("@Apellidos", usuario.Apellidos ?? (object)DBNull.Value),
-                new SqlParameter("@Correo", usuario.Correo ?? (object)DBNull.Value),
+            return await _dbContext.Database.ExecuteSqlRawAsync("EXEC PA_EDITAR_USUARIO @id_usuario, @usuario, @correo, @clave, @id_rol, @Estado",
+
+                new SqlParameter("@usuario", usuario.Usuario1 ?? (object)DBNull.Value),
+                new SqlParameter("@correo", usuario.Correo ?? (object)DBNull.Value),
+                new SqlParameter("@clave", claveEncriptada),
+                new SqlParameter("@id_rol", usuario.IdRol),
                 new SqlParameter("@Estado", usuario.Estado ?? false)
                 );
         }

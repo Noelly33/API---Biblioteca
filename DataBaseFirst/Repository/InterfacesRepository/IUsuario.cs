@@ -11,9 +11,9 @@ namespace DataBaseFirst.Repository.InterfacesRepository
     public interface IUsuario
     {
         Task<List<Usuario>> ListaUsuarios();
-        Task<Usuario> ObtenerUsuarioNombre(string nombres);
+        //Task<Usuario1> ObtenerUsuarioNombre(string nombres);
         Task<Usuario> ObtenerUsuarioID(int id);
-        Task<UsuarioLibroPrestamoDto> ObtenerUsuarioLibroPrestamo(string nombre);
+        Task<UsuarioRolDto> IniciarSesion(LoginDto login);
         Task<int> RegistrarUsuario(Usuario usuario);
         Task<int> EditarUsuario(Usuario usuario);
         Task<int> EliminarUsuario(int id);
