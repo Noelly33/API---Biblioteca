@@ -6,13 +6,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataBaseFirst.Models;
 
-[Table("PRESTAMOS")]
+[Table("PRESTAMO")]
 public partial class Prestamo
 {
-    //Esta es la clase prestamo
     [Key]
-    [Column("ID_PRESTAMOS")]
-    public int IdPrestamos { get; set; }
+    [Column("ID_PRESTAMO")]
+    public int IdPrestamo { get; set; }
+
+    [Column("ID_CLIENTE")]
+    public int? IdCliente { get; set; }
 
     [Column("ID_USUARIO")]
     public int? IdUsuario { get; set; }
@@ -28,6 +30,10 @@ public partial class Prestamo
 
     [Column("ESTADO")]
     public bool? Estado { get; set; }
+
+    [ForeignKey("IdCliente")]
+    [InverseProperty("Prestamos")]
+    public virtual Cliente? IdClienteNavigation { get; set; }
 
     [ForeignKey("IdLibro")]
     [InverseProperty("Prestamos")]
